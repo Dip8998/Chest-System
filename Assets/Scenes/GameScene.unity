@@ -1241,6 +1241,52 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 451520875}
   m_CullTransparentMesh: 1
+--- !u!1 &472045882
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 472045884}
+  - component: {fileID: 472045883}
+  m_Layer: 0
+  m_Name: GameManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &472045883
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 472045882}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2319f21de28285240b789b944a5e7845, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  chestListSO: {fileID: 11400000, guid: 0a43c7405ca9bdb49bde1349ea252f81, type: 2}
+  chestPrefab: {fileID: -8518523238187299970, guid: c3fb0859a3e228d4fa0e7a8c5522b0fc, type: 3}
+--- !u!4 &472045884
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 472045882}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &497236221
 GameObject:
   m_ObjectHideFlags: 0
@@ -4271,6 +4317,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   chestSlotPrefab: {fileID: 9036269974461851468, guid: 5784160f0b126744f938914565ec95cb, type: 3}
   addChestSlotButton: {fileID: 1421728050}
+  generateChestButton: {fileID: 2139968153}
   assignedChestSlots: 4
   chestSlotContainer: {fileID: 497236222}
 --- !u!1 &1364593969
@@ -6125,3 +6172,4 @@ SceneRoots:
   - {fileID: 619394802}
   - {fileID: 1363504577}
   - {fileID: 905443628}
+  - {fileID: 472045884}

@@ -1,3 +1,4 @@
+using ChestSystem.Main;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -7,6 +8,7 @@ namespace ChestSystem.UI
     {
         [SerializeField] private GameObject chestSlotPrefab;
         [SerializeField] private Button addChestSlotButton;
+        [SerializeField] private Button generateChestButton;
         [SerializeField] private int assignedChestSlots;
         [SerializeField] private Transform chestSlotContainer;
 
@@ -23,6 +25,7 @@ namespace ChestSystem.UI
         private void ButtonsListners()
         {
             addChestSlotButton.onClick.AddListener(CreateSlot);
+            generateChestButton.onClick.AddListener(() => GameService.Instance.chestService.GenerateChest(GetSlots()));
         }
 
         private void AssignSlots()
@@ -39,6 +42,8 @@ namespace ChestSystem.UI
             ChestSlotUIView chestUISlot = slot.GetComponent<ChestSlotUIView>();
             chestSlotUIController.AddSlot(chestUISlot);
         }
+
+        public ChestSlotUIController GetSlots() => chestSlotUIController;
     }
 
 }
