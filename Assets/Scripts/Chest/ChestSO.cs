@@ -8,6 +8,7 @@ namespace ChestSystem.Chest
         public ChestType chestType;
         public Sprite chestSprite;
         public float chestTimer;
+        public float chestGeneratingChance; 
         public int minCoinValue;
         public int maxCoinValue;
         public int minGemValue;

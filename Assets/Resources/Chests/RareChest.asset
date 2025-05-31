@@ -15,6 +15,7 @@ MonoBehaviour:
   chestType: 1
   chestSprite: {fileID: -1747323974, guid: 7e1cdf6e6162618468d71fde3041f0f5, type: 3}
   chestTimer: 30
+  chestGeneratingChance: 30
   minCoinValue: 300
   maxCoinValue: 500
   minGemValue: 20
