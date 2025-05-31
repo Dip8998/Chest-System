@@ -1,3 +1,4 @@
+using ChestSystem.Chest;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -7,6 +8,12 @@ namespace ChestSystem.UI
     {
         private List<ChestSlotUIView> slotList = new List<ChestSlotUIView>();
         private ChestSlotUIView currentSlot;
+        private ChestController chestController;
+
+        public void SetAssignedChestController( ChestController chestController)
+        {
+            this.chestController = chestController;
+        }
 
         public void AddSlot(ChestSlotUIView chestSlotUIView)
         {

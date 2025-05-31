@@ -76,11 +76,10 @@ namespace ChestSystem.UI
         private void SetTimer()
         {
             HideAllUIPanels();
-            if (!GameService.Instance.chestService.GetIsChestUnlocking())
+            if (currentChestController != null)
             {
-                currentChestController.ChangeState(ChestState.Unlocking);
+                GameService.Instance.chestService.EnqueueChestForUnlock(currentChestController);
             }
-            //will implementing queue
         }
     }
 

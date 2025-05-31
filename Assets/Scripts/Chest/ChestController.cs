@@ -2,6 +2,8 @@ using ChestSystem.StateMachine;
 using ChestSystem.UI;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
+using ChestSystem.Main;
 
 namespace ChestSystem.Chest
 {
@@ -12,6 +14,9 @@ namespace ChestSystem.Chest
         private ChestSlotUIView chestSlotUIView;
         private ChestModel chestModel;
         private ChestStateMachine stateMachine;
+
+        public event Action<ChestController> OnChestUnlocked;
+        private ChestType currentChestType;
 
         public ChestController(ChestListSO chestListSO, ChestView chestPrefab, ChestSlotUIController chestSlotUIController)
         {
@@ -36,12 +41,13 @@ namespace ChestSystem.Chest
 
             ChestType chestType = GetRandomChestType();
             chestModel.SetCurrentChestType(chestType);
+            this.currentChestType = chestType;
 
             float unlockDuration = chestModel.GetUnlockDurationForChestType(chestType);
             chestModel.SetRemainingTime(unlockDuration);
 
             chestPrefab.SetController(this, chestType);
-            stateMachine.ChangeState(ChestState.Locked);
+            ChangeState(ChestState.Locked);
         }
 
         public Sprite GetChestImage(ChestType chestType) => chestModel.GetChestImage(chestType);
@@ -87,13 +93,21 @@ namespace ChestSystem.Chest
 
         public void ChangeState(ChestState state)
         {
-            if(CurrentChestState() != stateMachine.GetStates()[state])
+            if (CurrentChestState() != stateMachine.GetStates()[state])
             {
                 stateMachine.ChangeState(state);
+                chestPrefab.SetChestStateText(state.ToString());
             }
         }
 
-        public void UpdateState() => stateMachine.Update();
+        public void UpdateState()
+        {
+            stateMachine.Update();
+            if (CurrentChestState() is UnlockedState && GameService.Instance.chestService.currentUnlockingChest == this)
+            {
+                OnChestUnlocked?.Invoke(this);
+            }
+        }
 
         public void SetRemainingTime(float time) => chestModel.SetRemainingTime(time);
 
@@ -109,6 +123,6 @@ namespace ChestSystem.Chest
 
         public void EnableChest() => chestPrefab.gameObject.SetActive(true);
 
+        public ChestType GetChestType() => currentChestType;
     }
 }
-

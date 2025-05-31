@@ -20,6 +20,7 @@ namespace ChestSystem.StateMachine
             state.Add(ChestState.Unlocking, new UnlockingState(chestController, this));
             state.Add(ChestState.Unlocked, new UnlockedState(chestController, this));
             state.Add(ChestState.Collected, new CollectedState(chestController, this));
+            state.Add(ChestState.Queued, new QueuedState(chestController, this));
         }
 
         private void ChangeState(IState newState)

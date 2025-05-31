@@ -3,6 +3,7 @@
     public enum ChestState
     {
         Locked,
+        Queued,
         Unlocking,
         Unlocked,
         Collected
