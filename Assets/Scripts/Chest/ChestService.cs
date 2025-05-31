@@ -9,6 +9,7 @@ namespace ChestSystem.Chest
     {
         private ChestController chestController;
         private ChestPool chestPool;
+        private bool isChestUnlocking = false;
 
         public ChestService(ChestListSO chestListSO, ChestView chestPrefab)
         {
@@ -32,7 +33,10 @@ namespace ChestSystem.Chest
             }
         }
 
-
         public ChestController GetChestController() => chestController;
+
+        public bool GetIsChestUnlocking() => isChestUnlocking;
+
+        public void SetIsChestUnlocked(bool isChestUnlcoked) => this.isChestUnlocking = isChestUnlcoked;
     }
 }

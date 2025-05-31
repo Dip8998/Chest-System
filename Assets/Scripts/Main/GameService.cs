@@ -9,10 +9,11 @@ namespace ChestSystem.Main
     public class GameService : GenericMonoSingleton<GameService>
     {
         public ChestService chestService {  get; private set; }
-        public UIService uiService {  get; private set; }
+        public UIService uiService => _uiService;
 
         [SerializeField] private ChestListSO chestListSO;
         [SerializeField] private ChestView chestPrefab;
+        [SerializeField] private UIService _uiService;
 
         protected override void Awake()
         {

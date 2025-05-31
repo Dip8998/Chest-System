@@ -1,3 +1,4 @@
+using ChestSystem.StateMachine;
 using ChestSystem.UI;
 using System.Collections.Generic;
 using UnityEngine;
@@ -10,12 +11,19 @@ namespace ChestSystem.Chest
         private ChestSlotUIController chestSlotUIController;
         private ChestSlotUIView chestSlotUIView;
         private ChestModel chestModel;
+        private ChestStateMachine stateMachine;
 
         public ChestController(ChestListSO chestListSO, ChestView chestPrefab, ChestSlotUIController chestSlotUIController)
         {
             this.chestPrefab = chestPrefab;
             this.chestSlotUIController = chestSlotUIController;
             chestModel = new ChestModel(chestListSO);
+            CreateStateMachine();
+        }
+
+        private void CreateStateMachine()
+        {
+            stateMachine = new ChestStateMachine(this);
         }
 
         public void SetChest()
@@ -29,7 +37,11 @@ namespace ChestSystem.Chest
             ChestType chestType = GetRandomChestType();
             chestModel.SetCurrentChestType(chestType);
 
+            float unlockDuration = chestModel.GetUnlockDurationForChestType(chestType);
+            chestModel.SetRemainingTime(unlockDuration);
+
             chestPrefab.SetController(this, chestType);
+            stateMachine.ChangeState(ChestState.Locked);
         }
 
         public Sprite GetChestImage(ChestType chestType) => chestModel.GetChestImage(chestType);
@@ -60,7 +72,43 @@ namespace ChestSystem.Chest
             return ChestType.Common;
         }
 
+        public string TimeFormat(float time)
+        {
+            float timeInSeconds = time;
+
+            int hours = (int)timeInSeconds / 3600;
+            int minutes = (int)(timeInSeconds % 3600) / 60;
+            int seconds = (int)(timeInSeconds % 60);
+
+            return $"{hours:D2}:{minutes:D2}:{seconds:D2}";
+        }
+
+        public IState CurrentChestState() => stateMachine.GetCurrentState();
+
+        public void ChangeState(ChestState state)
+        {
+            if(CurrentChestState() != stateMachine.GetStates()[state])
+            {
+                stateMachine.ChangeState(state);
+            }
+        }
+
+        public void UpdateState() => stateMachine.Update();
+
+        public void SetRemainingTime(float time) => chestModel.SetRemainingTime(time);
+
+        public void SetTimerText() => chestPrefab.SetChestTimerText(GetRemainingTimeInSeconds());
+
+        public void SetTimerText(float timeInSeconds) => chestPrefab.SetChestTimerText(timeInSeconds);
+
+        public void DisableTimerText() => chestPrefab.DisableTimerText();
+
+        public float GetRemainingTimeInSeconds() => chestModel.GetRemainingTime() * 60;
+
+        public void SetChestStateText(string state) => chestPrefab.SetChestStateText(state);
+
         public void EnableChest() => chestPrefab.gameObject.SetActive(true);
+
     }
 }
 

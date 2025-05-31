@@ -8,6 +8,7 @@ namespace ChestSystem.Chest
     {
         private Dictionary<ChestType, ChestSO> chestTypeData;
         private ChestType currentChestType;
+        private float remainingTime;
 
         public ChestModel(ChestListSO chestListSO)
         {
@@ -50,6 +51,22 @@ namespace ChestSystem.Chest
 
         public void SetCurrentChestType(ChestType chestType) => currentChestType = chestType;
 
+        public void SetRemainingTime(float time)
+        {
+            remainingTime = time;
+        }
+
+        public float GetRemainingTime() => remainingTime;
+
+        public float GetUnlockDurationForChestType(ChestType chestType)
+        {
+            if (chestTypeData.TryGetValue(chestType, out ChestSO so))
+            {
+                return so.chestTimer;
+            }
+            Debug.LogWarning($"No unlock duration found for ChestType: {chestType}");
+            return 0f; 
+        }
     }
 }
 

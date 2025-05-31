@@ -1066,7 +1066,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 385323255}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1192672463}
+        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+        m_MethodName: SetActive
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &385323255
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1272,6 +1284,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   chestListSO: {fileID: 11400000, guid: 0a43c7405ca9bdb49bde1349ea252f81, type: 2}
   chestPrefab: {fileID: -8518523238187299970, guid: c3fb0859a3e228d4fa0e7a8c5522b0fc, type: 3}
+  _uiService: {fileID: 1363504578}
 --- !u!4 &472045884
 Transform:
   m_ObjectHideFlags: 0
@@ -4315,6 +4328,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 71ba2885bc765e945aefb16edf5626f0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  unlockChestPanel: {fileID: 1192672463}
+  undoCollectPanel: {fileID: 0}
+  startTimerButton: {fileID: 1080841646}
+  unlockChestWithGemsButton: {fileID: 0}
+  undoButton: {fileID: 0}
+  collectButton: {fileID: 0}
+  gemsText: {fileID: 0}
+  chestTypeText: {fileID: 0}
   chestSlotPrefab: {fileID: 9036269974461851468, guid: 5784160f0b126744f938914565ec95cb, type: 3}
   addChestSlotButton: {fileID: 1421728050}
   generateChestButton: {fileID: 2139968153}
