@@ -130,6 +130,7 @@ GameObject:
   - component: {fileID: 49141746}
   - component: {fileID: 49141748}
   - component: {fileID: 49141747}
+  - component: {fileID: 49141749}
   m_Layer: 5
   m_Name: CoinandGemsPanel
   m_TagString: Untagged
@@ -196,6 +197,20 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 49141745}
   m_CullTransparentMesh: 1
+--- !u!114 &49141749
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 49141745}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b6b225ae5ea99dd41b778b2f324486a9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  coinsText: {fileID: 236828140}
+  gemsText: {fileID: 1002116330}
 --- !u!1 &58728565
 GameObject:
   m_ObjectHideFlags: 0
@@ -550,7 +565,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 215331863}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 2131018363}
+        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+        m_MethodName: SetActive
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &215331863
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1285,6 +1312,7 @@ MonoBehaviour:
   chestListSO: {fileID: 11400000, guid: 0a43c7405ca9bdb49bde1349ea252f81, type: 2}
   chestPrefab: {fileID: -8518523238187299970, guid: c3fb0859a3e228d4fa0e7a8c5522b0fc, type: 3}
   _uiService: {fileID: 1363504578}
+  resourceView: {fileID: 49141749}
 --- !u!4 &472045884
 Transform:
   m_ObjectHideFlags: 0
@@ -3201,7 +3229,7 @@ GameObject:
   - component: {fileID: 1002116331}
   - component: {fileID: 1002116330}
   m_Layer: 5
-  m_Name: Coin text (1)
+  m_Name: Gem text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3495,7 +3523,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 72}
+  m_AnchoredPosition: {x: 0, y: 100}
   m_SizeDelta: {x: 500, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1017440435
@@ -3545,8 +3573,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 36
-  m_fontSizeBase: 36
+  m_fontSize: 50
+  m_fontSizeBase: 50
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -4329,13 +4357,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   unlockChestPanel: {fileID: 1192672463}
-  undoCollectPanel: {fileID: 0}
+  undoCollectPanel: {fileID: 2131018363}
   startTimerButton: {fileID: 1080841646}
-  unlockChestWithGemsButton: {fileID: 0}
+  unlockChestWithGemsButton: {fileID: 379735772}
   undoButton: {fileID: 0}
   collectButton: {fileID: 0}
-  gemsText: {fileID: 0}
-  chestTypeText: {fileID: 0}
+  gemsText: {fileID: 1395936158}
+  chestTypeTextForUnlockPanel: {fileID: 1017440435}
+  chestTypeTextForUndoPanel: {fileID: 974215886}
   chestSlotPrefab: {fileID: 9036269974461851468, guid: 5784160f0b126744f938914565ec95cb, type: 3}
   addChestSlotButton: {fileID: 1421728050}
   generateChestButton: {fileID: 2139968153}
@@ -5077,7 +5106,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.3443396, g: 0.66059935, b: 1, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1

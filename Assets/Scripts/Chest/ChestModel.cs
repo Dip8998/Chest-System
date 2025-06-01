@@ -51,6 +51,8 @@ namespace ChestSystem.Chest
 
         public void SetCurrentChestType(ChestType chestType) => currentChestType = chestType;
 
+        public ChestType GetCurrentChestType() => currentChestType;
+
         public void SetRemainingTime(float time)
         {
             remainingTime = time;

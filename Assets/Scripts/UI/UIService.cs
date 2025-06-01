@@ -1,5 +1,6 @@
 using ChestSystem.Chest;
 using ChestSystem.Main;
+using ChestSystem.StateMachine;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -15,7 +16,8 @@ namespace ChestSystem.UI
         [SerializeField] private Button undoButton;
         [SerializeField] private Button collectButton;
         [SerializeField] private TextMeshProUGUI gemsText;
-        [SerializeField] private TextMeshProUGUI chestTypeText;
+        [SerializeField] private TextMeshProUGUI chestTypeTextForUnlockPanel;
+        [SerializeField] private TextMeshProUGUI chestTypeTextForUndoPanel;
 
         [SerializeField] private GameObject chestSlotPrefab;
         [SerializeField] private Button addChestSlotButton;
@@ -25,6 +27,7 @@ namespace ChestSystem.UI
 
         private ChestSlotUIController chestSlotUIController;
         private ChestController currentChestController;
+        private bool isUnlockedWithGems = false;
 
 
         private void Start()
@@ -34,9 +37,26 @@ namespace ChestSystem.UI
             ButtonsListners();
         }
 
-        public void SetCurrentChestController(ChestController chestController)
+        public void SetUnlockSelectionPanel(
+            int gemsRequired, 
+            string chestType, 
+            ChestController chestController,
+            ChestSlotUIController chestSlotUIController,
+            bool isUnlockedWithGems
+            )
         {
-            currentChestController = chestController;
+            this.currentChestController = chestController;
+            this.chestSlotUIController = chestSlotUIController;
+            this.isUnlockedWithGems = isUnlockedWithGems;
+
+            gemsText.text = gemsRequired.ToString();
+            chestTypeTextForUnlockPanel.text = chestType + " Chest";
+            chestTypeTextForUndoPanel.text = chestType + " Chest";
+
+            unlockChestWithGemsButton.onClick.RemoveAllListeners();
+            unlockChestWithGemsButton.onClick.AddListener(UnlockChestWithGems);
+            
+            ShowRelevantPanel(currentChestController.CurrentChestState());
         }
 
         private void ButtonsListners()
@@ -63,14 +83,30 @@ namespace ChestSystem.UI
 
         public ChestSlotUIController GetSlots() => chestSlotUIController;
 
-        private void HideAllUIPanels()
+        public void HideAllUIPanels()
         {
             unlockChestPanel.SetActive(false);
+            undoCollectPanel.SetActive(false);
         }
 
-        public void ShowUnlockChestPanel()
+        public void ShowRelevantPanel(IState currentState)
         {
-            unlockChestPanel.SetActive(true);
+            HideAllUIPanels();
+
+            if (currentState is LockedState || currentState is UnlockingState)
+            {
+                unlockChestPanel.SetActive(true);
+            }
+            else if (currentState is UnlockedState)
+            {
+                undoCollectPanel.SetActive(true);
+            }
+        }
+
+        private void UnlockChestWithGems()
+        {
+            currentChestController.UnlockChestWithGems();
+            HideAllUIPanels();
         }
 
         private void SetTimer()

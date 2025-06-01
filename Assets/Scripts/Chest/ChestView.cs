@@ -66,8 +66,7 @@ public class ChestView : MonoBehaviour
 
     private void ShowUnlockPanel()
     {
-        GameService.Instance.uiService.SetCurrentChestController(chestController);
-        GameService.Instance.uiService.ShowUnlockChestPanel();
+        chestController.EnableUnlockSelection();
     }
 
 }

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 using ChestSystem.Main;
+using ChestSystem.Command;
 
 namespace ChestSystem.Chest
 {
@@ -14,6 +15,8 @@ namespace ChestSystem.Chest
         private ChestSlotUIView chestSlotUIView;
         private ChestModel chestModel;
         private ChestStateMachine stateMachine;
+        private int requiredGems;
+        private bool isChestUnlockWithGems = false;
 
         public event Action<ChestController> OnChestUnlocked;
         private ChestType currentChestType;
@@ -109,6 +112,32 @@ namespace ChestSystem.Chest
             }
         }
 
+        public void EnableUnlockSelection()
+        {
+            GameService.Instance.uiService.SetUnlockSelectionPanel(
+                GetGemsRequiredToUnlockCount(),
+                chestModel.GetCurrentChestType().ToString(),
+                this,
+                chestSlotUIController,
+                isChestUnlockWithGems
+                );
+        }
+
+        public void UnlockChestWithGems()
+        {
+            ICommand openChestWithGemsCommand = new ChestOpenWithGems(GameService.Instance.resourceService, this);
+            GameService.Instance.commandInvoker.ProcessCommands(this, openChestWithGemsCommand);
+        }
+
+        public int GetGemsRequiredToUnlockCount()
+        {
+            float timer = chestModel.GetRemainingTime();
+            float gemsRequired = timer / 10f;
+
+            requiredGems = (int)Math.Ceiling(gemsRequired);
+            return requiredGems;
+        }
+
         public void SetRemainingTime(float time) => chestModel.SetRemainingTime(time);
 
         public void SetTimerText() => chestPrefab.SetChestTimerText(GetRemainingTimeInSeconds());
@@ -124,5 +153,7 @@ namespace ChestSystem.Chest
         public void EnableChest() => chestPrefab.gameObject.SetActive(true);
 
         public ChestType GetChestType() => currentChestType;
+
+        public void SetIsChestUnlockWithGems(bool isChestUnlockWithGems) => this.isChestUnlockWithGems = isChestUnlockWithGems;
     }
 }
