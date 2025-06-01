@@ -11,7 +11,6 @@ namespace ChestSystem.Chest
     {
         private ChestController chestController;
         private ChestPool chestPool;
-        private bool isChestUnlocking = false;
 
         private Queue<ChestController> unlockQueue;
         public ChestController currentUnlockingChest { get; private set; }
@@ -33,7 +32,7 @@ namespace ChestSystem.Chest
             {
                 if (unlockQueue.Count > 0 && unlockQueue.Peek() != chestToUnlock)
                 {
-                    return; 
+                    return;
                 }
 
                 if (currentUnlockingChest == chestToUnlock || unlockQueue.Contains(chestToUnlock))
@@ -50,7 +49,6 @@ namespace ChestSystem.Chest
         private void StartUnlockingChest(ChestController chest)
         {
             currentUnlockingChest = chest;
-            isChestUnlocking = true;
             chest.ChangeState(ChestState.Unlocking);
             chest.OnChestUnlocked += OnCurrentChestUnlocked;
             UpdateNextQueuedChest();
@@ -60,7 +58,6 @@ namespace ChestSystem.Chest
         {
             unlockedChest.OnChestUnlocked -= OnCurrentChestUnlocked;
             currentUnlockingChest = null;
-            isChestUnlocking = false;
 
             if (unlockQueue.Count > 0)
             {
@@ -83,13 +80,17 @@ namespace ChestSystem.Chest
             if (currentUnlockingChest == chestToRemove)
             {
                 currentUnlockingChest.OnChestUnlocked -= OnCurrentChestUnlocked;
+                currentUnlockingChest.ChangeState(ChestState.Locked);
                 currentUnlockingChest = null;
-                isChestUnlocking = false;
 
                 if (unlockQueue.Count > 0)
                 {
                     ChestController nextChest = unlockQueue.Dequeue();
                     StartUnlockingChest(nextChest);
+                }
+                else
+                {
+                    UpdateNextQueuedChest();
                 }
             }
             else if (unlockQueue.Contains(chestToRemove))
@@ -99,13 +100,9 @@ namespace ChestSystem.Chest
                 {
                     ChestController chest = unlockQueue.Dequeue();
                     if (chest != chestToRemove)
-                    {
                         tempQueue.Enqueue(chest);
-                    }
                     else
-                    {
                         chest.ChangeState(ChestState.Locked);
-                    }
                 }
                 unlockQueue = tempQueue;
                 UpdateNextQueuedChest();
@@ -114,26 +111,22 @@ namespace ChestSystem.Chest
 
         public void GenerateChest(ChestSlotUIController chestSlotUIController)
         {
-            Debug.Log("Trying to generate chest...");
-
             if (chestSlotUIController.HasAvailableSlot())
             {
-                Debug.Log("Slot is available!");
                 chestController = chestPool.GetChest(chestSlotUIController);
                 chestController.EnableChest();
                 chestController.SetChest();
-                chestSlotUIController.SetAssignedChestController(chestController);
             }
             else
             {
-                Debug.LogWarning("No available chest slots!");
+                GameService.Instance.uiService.ShowSlotsFullPopup();
             }
         }
 
         public ChestController GetChestController() => chestController;
 
-        public bool GetIsChestUnlocking() => isChestUnlocking;
+        public bool IsAnyChestUnlocking() => currentUnlockingChest != null;
 
-        public void SetIsChestUnlocked(bool isChestUnlcoked) => this.isChestUnlocking = isChestUnlcoked;
+        public void ReturnChestToPool(ChestController chestController) => chestPool.ReturnToPool(chestController);
     }
 }

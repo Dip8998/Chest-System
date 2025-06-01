@@ -7,57 +7,51 @@ namespace ChestSystem.UI
     public class ChestSlotUIController
     {
         private List<ChestSlotUIView> slotList = new List<ChestSlotUIView>();
+        private Dictionary<ChestSlotUIView, bool> isSlotAvailable = new Dictionary<ChestSlotUIView, bool>();
         private ChestSlotUIView currentSlot;
-        private ChestController chestController;
-
-        public void SetAssignedChestController( ChestController chestController)
-        {
-            this.chestController = chestController;
-        }
 
         public void AddSlot(ChestSlotUIView chestSlotUIView)
         {
             slotList.Add(chestSlotUIView);
-            chestSlotUIView.SetChest(false); 
+            isSlotAvailable[chestSlotUIView] = true;
             UpdateSlotOrder();
         }
 
         public Transform GetAvailableSlotPosition()
         {
-            ChestSlotUIView slot = FindFirstAvailableSlot();
-            if (slot != null)
+            foreach (var slot in slotList)
             {
-                slot.SetChest(true);
-                currentSlot = slot;
-                return slot.transform;
-            }
-            return null;
-        }
-
-        public bool HasAvailableSlot() => FindFirstAvailableSlot() != null;
-
-        public ChestSlotUIView GetFirstAvailableSlot() => FindFirstAvailableSlot();
-
-        private ChestSlotUIView FindFirstAvailableSlot()
-        {
-            foreach (ChestSlotUIView slot in slotList)
-            {
-                if (!slot.hasChest)
+                if (isSlotAvailable.TryGetValue(slot, out bool available) && available)
                 {
-                    return slot;
+                    isSlotAvailable[slot] = false;
+                    currentSlot = slot;
+                    return slot.transform;
                 }
             }
             return null;
         }
 
-        private void UpdateSlotOrder()
+        public bool HasAvailableSlot()
         {
-            for (int i = 0; i < slotList.Count; i++)
+            foreach (var kv in isSlotAvailable)
             {
-                slotList[i].transform.SetSiblingIndex(i);
+                if (kv.Value) return true;
             }
+            return false;
+        }
+
+        public void SetIsSlotHasAChest(ChestSlotUIView slot, bool hasChest)
+        {
+            if (isSlotAvailable.ContainsKey(slot))
+                isSlotAvailable[slot] = !hasChest;
         }
 
         public ChestSlotUIView GetCurrentSlot() => currentSlot;
+
+        private void UpdateSlotOrder()
+        {
+            for (int i = 0; i < slotList.Count; i++)
+                slotList[i].transform.SetSiblingIndex(i);
+        }
     }
 }

@@ -18,21 +18,20 @@ namespace ChestSystem.StateMachine
 
         public void OnStateEnter()
         {
-            GameService.Instance.chestService.SetIsChestUnlocked(true);
             chestController.SetChestStateText("Unlocking");
             remainingTime = chestController.GetRemainingTimeInSeconds();
         }
 
         public void Update()
         {
-            if(remainingTime > 0)
+            if (remainingTime > 0)
             {
                 remainingTime -= Time.deltaTime;
 
                 chestController.SetRemainingTime(remainingTime / 60);
                 chestController.SetTimerText(remainingTime);
             }
-            else if(remainingTime <= 0)
+            else if (remainingTime <= 0)
             {
                 remainingTime = 0;
                 chestController.SetRemainingTime(remainingTime / 60);
@@ -41,7 +40,7 @@ namespace ChestSystem.StateMachine
             }
         }
 
-        public void OnStateExit() => GameService.Instance.chestService.SetIsChestUnlocked(false);
+        public void OnStateExit() { }
 
     }
 }

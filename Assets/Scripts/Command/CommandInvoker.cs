@@ -30,9 +30,12 @@ namespace ChestSystem.Command
             chestHistory[chestController].Push(command);
         }
 
-        public void Undo()
+        public void Undo(ChestController chestController)
         {
-
+            if (chestHistory.ContainsKey(chestController) && chestHistory[chestController].Count > 0)
+            {
+                chestHistory[chestController].Pop().Undo();
+            }
         }
     }
 }

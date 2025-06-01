@@ -1,5 +1,6 @@
 ﻿using ChestSystem.Chest;
 using ChestSystem.Resource;
+using ChestSystem.Main;
 
 namespace ChestSystem.Command
 {
@@ -21,7 +22,7 @@ namespace ChestSystem.Command
             requiredGems = chestController.GetGemsRequiredToUnlockCount();
             gemsCount = resourceController.GetGemsCount();
 
-            if(requiredGems <= gemsCount)
+            if (requiredGems <= gemsCount)
             {
                 int remainingGems = gemsCount - requiredGems;
                 chestController.ChangeState(ChestState.Unlocked);
@@ -29,11 +30,15 @@ namespace ChestSystem.Command
                 chestController.SetIsChestUnlockWithGems(true);
                 resourceController.SetGemsCount(remainingGems);
             }
+            else
+            {
+                GameService.Instance.uiService.ShowNotEnoughGemsPopup();
+            }
         }
 
         public void Undo()
         {
-
+            resourceController.SetGemsCount(gemsCount);
         }
     }
 }

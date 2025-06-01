@@ -12,6 +12,15 @@
             resourceView.SetResourceController(this);
         }
 
+        public void SetTotalGemsAndCoinsCount(int coins, int gems)
+        {
+            int totalCoins = coins + GetCoinsCount();
+            int totalGems = gems + GetGemsCount();
+
+            SetCoinsCount(totalCoins);
+            SetGemsCount(totalGems);
+        }
+
         public void SetCoinsCount(int count)
         {
             resourceModel.SetCoinCount(count);

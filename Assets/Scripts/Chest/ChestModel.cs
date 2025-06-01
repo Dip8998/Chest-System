@@ -69,6 +69,16 @@ namespace ChestSystem.Chest
             Debug.LogWarning($"No unlock duration found for ChestType: {chestType}");
             return 0f; 
         }
+
+        public (int minCoins, int maxCoins, int minGems, int maxGems) GetChestRewards(ChestType chestType)
+        {
+            if (chestTypeData.TryGetValue(chestType, out ChestSO so))
+            {
+                return (so.minCoinValue, so.maxCoinValue, so.minGemValue, so.maxGemValue);
+            }
+            return (0, 0, 0, 0);
+        }
+
     }
 }
 

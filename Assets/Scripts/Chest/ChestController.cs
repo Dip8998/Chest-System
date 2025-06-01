@@ -100,16 +100,17 @@ namespace ChestSystem.Chest
             {
                 stateMachine.ChangeState(state);
                 chestPrefab.SetChestStateText(state.ToString());
+
+                if (state == ChestState.Unlocked && GameService.Instance.chestService.currentUnlockingChest == this)
+                {
+                    OnChestUnlocked?.Invoke(this);
+                }
             }
         }
 
         public void UpdateState()
         {
             stateMachine.Update();
-            if (CurrentChestState() is UnlockedState && GameService.Instance.chestService.currentUnlockingChest == this)
-            {
-                OnChestUnlocked?.Invoke(this);
-            }
         }
 
         public void EnableUnlockSelection()
@@ -119,6 +120,7 @@ namespace ChestSystem.Chest
                 chestModel.GetCurrentChestType().ToString(),
                 this,
                 chestSlotUIController,
+                chestSlotUIView,
                 isChestUnlockWithGems
                 );
         }
@@ -127,6 +129,21 @@ namespace ChestSystem.Chest
         {
             ICommand openChestWithGemsCommand = new ChestOpenWithGems(GameService.Instance.resourceService, this);
             GameService.Instance.commandInvoker.ProcessCommands(this, openChestWithGemsCommand);
+            SetIsChestUnlockWithGems(true);
+            ChangeState(ChestState.Unlocked);
+        }
+
+        public void UndoUnlockChestWithGems()
+        {
+            GameService.Instance.commandInvoker.Undo(this);
+            ChangeState(ChestState.Locked);
+
+            float originalDuration = chestModel.GetUnlockDurationForChestType(chestModel.GetCurrentChestType());
+            chestModel.SetRemainingTime(originalDuration);
+
+            SetTimerText(); 
+            SetIsChestUnlockWithGems(false);
+            GameService.Instance.chestService.RemoveFromQueue(this);
         }
 
         public int GetGemsRequiredToUnlockCount()
@@ -136,6 +153,32 @@ namespace ChestSystem.Chest
 
             requiredGems = (int)Math.Ceiling(gemsRequired);
             return requiredGems;
+        }
+
+        public void Collect()
+        {
+            ChangeState(ChestState.Collected);
+            RemoveChest();
+
+            chestSlotUIController.SetIsSlotHasAChest(chestSlotUIView, false);
+
+            int coins = GetCollectedCoins();
+            int gems = GetCollectedGems();
+
+            GameService.Instance.uiService.SetCollectedValues(coins, gems);
+            GameService.Instance.resourceService.GetResourceController().SetTotalGemsAndCoinsCount(coins, gems);
+        }
+
+        private int GetCollectedCoins()
+        {
+            var rewards = chestModel.GetChestRewards(chestModel.GetCurrentChestType());
+            return UnityEngine.Random.Range(rewards.minCoins, rewards.maxCoins + 1);
+        }
+
+        private int GetCollectedGems()
+        {
+            var rewards = chestModel.GetChestRewards(chestModel.GetCurrentChestType());
+            return UnityEngine.Random.Range(rewards.minGems, rewards.maxGems + 1);
         }
 
         public void SetRemainingTime(float time) => chestModel.SetRemainingTime(time);
@@ -149,6 +192,12 @@ namespace ChestSystem.Chest
         public float GetRemainingTimeInSeconds() => chestModel.GetRemainingTime() * 60;
 
         public void SetChestStateText(string state) => chestPrefab.SetChestStateText(state);
+
+        public void RemoveChest()
+        {
+            GameService.Instance.chestService.ReturnChestToPool(this);
+            chestPrefab.gameObject.SetActive(false);
+        }
 
         public void EnableChest() => chestPrefab.gameObject.SetActive(true);
 
