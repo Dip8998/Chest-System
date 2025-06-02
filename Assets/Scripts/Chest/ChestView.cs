@@ -33,12 +33,8 @@ public class ChestView : MonoBehaviour
         this.chestController = chestController;
         SetChestImage(chestType);
     }
-
-    private void SetChestImage(ChestType chestType)
+    public void SetChestImage(Sprite sprite)
     {
-        Sprite sprite = chestController.GetChestImage(chestType);
-        Debug.Log($"Setting chest image: {sprite?.name ?? "NULL"}");
-
         if (sprite != null)
         {
             chestImage.sprite = sprite;
@@ -46,9 +42,16 @@ public class ChestView : MonoBehaviour
         }
         else
         {
-            Debug.LogWarning("Chest sprite is null!");
+            Debug.LogWarning("Sprite is null!");
         }
     }
+
+    public void SetChestImage(ChestType chestType)
+    {
+        Sprite sprite = chestController.GetChestImage(chestType);
+        SetChestImage(sprite);
+    }
+
 
     public void SetChestTimerText(float timeInSeconds)
     {

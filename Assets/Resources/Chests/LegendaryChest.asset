@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   chestType: 3
   chestSprite: {fileID: -273636692, guid: 7e1cdf6e6162618468d71fde3041f0f5, type: 3}
+  chestUnlockedSprite: {fileID: -2110142666, guid: 7e1cdf6e6162618468d71fde3041f0f5, type: 3}
   chestTimer: 180
   chestGeneratingChance: 10
   minCoinValue: 1000

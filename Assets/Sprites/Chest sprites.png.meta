@@ -270,9 +270,9 @@ TextureImporter:
       name: Chest sprites_4
       rect:
         serializedVersion: 2
-        x: 20
+        x: 57
         y: 545
-        width: 257
+        width: 218
         height: 207
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
@@ -360,7 +360,7 @@ TextureImporter:
         serializedVersion: 2
         x: 767
         y: 544
-        width: 254
+        width: 209
         height: 208
       alignment: 0
       pivot: {x: 0.5, y: 0.5}

@@ -1,4 +1,5 @@
 ﻿using ChestSystem.Chest;
+using ChestSystem.Main;
 
 namespace ChestSystem.StateMachine
 {
@@ -15,7 +16,9 @@ namespace ChestSystem.StateMachine
 
         public void OnStateEnter()
         {
+            GameService.Instance.soundService.Play(Sound.Sounds.CHESTUNLOCKED);
             chestController.SetChestStateText("Unlocked");
+            chestController.UpdateToUnlockedImage();
         }
 
         public void Update() { }

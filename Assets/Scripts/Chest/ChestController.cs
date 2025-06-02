@@ -5,6 +5,7 @@ using UnityEngine;
 using System;
 using ChestSystem.Main;
 using ChestSystem.Command;
+using ChestSystem.Sound;
 
 namespace ChestSystem.Chest
 {
@@ -18,7 +19,6 @@ namespace ChestSystem.Chest
         private int requiredGems;
         private bool isChestUnlockWithGems = false;
 
-        public event Action<ChestController> OnChestUnlocked;
         private ChestType currentChestType;
 
         public ChestController(ChestListSO chestListSO, ChestView chestPrefab, ChestSlotUIController chestSlotUIController)
@@ -54,6 +54,16 @@ namespace ChestSystem.Chest
         }
 
         public Sprite GetChestImage(ChestType chestType) => chestModel.GetChestImage(chestType);
+
+        public void UpdateToUnlockedImage()
+        {
+            Sprite unlockedSprite = chestModel.GetUnlockedChestImage(currentChestType);
+            if (unlockedSprite != null)
+            {
+                chestPrefab.SetChestImage(unlockedSprite);
+            }
+        }
+
 
         public ChestType GetRandomChestType()
         {
@@ -101,9 +111,9 @@ namespace ChestSystem.Chest
                 stateMachine.ChangeState(state);
                 chestPrefab.SetChestStateText(state.ToString());
 
-                if (state == ChestState.Unlocked && GameService.Instance.chestService.currentUnlockingChest == this)
+                if (state == ChestState.Unlocked)
                 {
-                    OnChestUnlocked?.Invoke(this);
+                    GameService.Instance.eventService.OnChestUnlocked.InvokeEvent(this);
                 }
             }
         }
@@ -115,6 +125,7 @@ namespace ChestSystem.Chest
 
         public void EnableUnlockSelection()
         {
+            GameService.Instance.soundService.Play(Sounds.CHESTPRESSEDSOUND);
             GameService.Instance.uiService.SetUnlockSelectionPanel(
                 GetGemsRequiredToUnlockCount(),
                 chestModel.GetCurrentChestType().ToString(),
@@ -129,8 +140,11 @@ namespace ChestSystem.Chest
         {
             ICommand openChestWithGemsCommand = new ChestOpenWithGems(GameService.Instance.resourceService, this);
             GameService.Instance.commandInvoker.ProcessCommands(this, openChestWithGemsCommand);
+
             SetIsChestUnlockWithGems(true);
-            ChangeState(ChestState.Unlocked);
+            GameService.Instance.chestService.RemoveFromQueue(this); 
+
+            ChangeState(ChestState.Unlocked); 
         }
 
         public void UndoUnlockChestWithGems()
@@ -138,10 +152,13 @@ namespace ChestSystem.Chest
             GameService.Instance.commandInvoker.Undo(this);
             ChangeState(ChestState.Locked);
 
+            Sprite lockedSprite = GetChestImage(chestModel.GetCurrentChestType()); 
+            chestPrefab.SetChestImage(lockedSprite);
+
             float originalDuration = chestModel.GetUnlockDurationForChestType(chestModel.GetCurrentChestType());
             chestModel.SetRemainingTime(originalDuration);
 
-            SetTimerText(); 
+            SetTimerText();
             SetIsChestUnlockWithGems(false);
             GameService.Instance.chestService.RemoveFromQueue(this);
         }
@@ -165,8 +182,9 @@ namespace ChestSystem.Chest
             int coins = GetCollectedCoins();
             int gems = GetCollectedGems();
 
-            GameService.Instance.uiService.SetCollectedValues(coins, gems);
-            GameService.Instance.resourceService.GetResourceController().SetTotalGemsAndCoinsCount(coins, gems);
+            GameService.Instance.eventService.OnChestCollected.InvokeEvent( coins, gems);
+            GameService.Instance.eventService.OnCoinsCountChanged.InvokeEvent(coins);
+            GameService.Instance.eventService.OnGemsCountChanged.InvokeEvent(gems);
         }
 
         private int GetCollectedCoins()

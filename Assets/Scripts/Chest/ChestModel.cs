@@ -39,6 +39,15 @@ namespace ChestSystem.Chest
             return null;
         }
 
+        public Sprite GetUnlockedChestImage(ChestType chestType)
+        {
+            if (chestTypeData.TryGetValue(chestType, out ChestSO so))
+            {
+                return so.chestUnlockedSprite;
+            }
+            return null;
+        }
+
         public Dictionary<ChestType, float> GetChestTypeByChance()
         {
             Dictionary<ChestType, float> chance = new Dictionary<ChestType, float>();

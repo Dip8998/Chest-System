@@ -8,7 +8,6 @@ namespace ChestSystem.StateMachine
     {
         private ChestStateMachine chestStateMachine;
         private ChestController chestController;
-        private float remainingTime;
 
         public UnlockingState(ChestController chestController, ChestStateMachine chestStateMachine)
         {
@@ -19,28 +18,27 @@ namespace ChestSystem.StateMachine
         public void OnStateEnter()
         {
             chestController.SetChestStateText("Unlocking");
-            remainingTime = chestController.GetRemainingTimeInSeconds();
         }
 
         public void Update()
         {
-            if (remainingTime > 0)
-            {
-                remainingTime -= Time.deltaTime;
+            float currentRemainingTime = chestController.GetRemainingTimeInSeconds(); 
 
-                chestController.SetRemainingTime(remainingTime / 60);
-                chestController.SetTimerText(remainingTime);
-            }
-            else if (remainingTime <= 0)
+            if (currentRemainingTime > 0)
             {
-                remainingTime = 0;
-                chestController.SetRemainingTime(remainingTime / 60);
+                chestController.SetRemainingTime((currentRemainingTime - Time.deltaTime) / 60f); 
+                chestController.SetTimerText(); 
+            }
+            else 
+            {
+                chestController.SetRemainingTime(0); 
                 chestController.DisableTimerText();
-                chestStateMachine.ChangeState(ChestState.Unlocked);
+                chestController.ChangeState(ChestState.Unlocked);
             }
         }
 
-        public void OnStateExit() { }
-
+        public void OnStateExit()
+        {
+        }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using ChestSystem.Chest;
 using ChestSystem.Resource;
 using ChestSystem.Main;
+using ChestSystem.Service;
 
 namespace ChestSystem.Command
 {
@@ -8,37 +9,35 @@ namespace ChestSystem.Command
     {
         private ChestController chestController;
         private ResourceController resourceController;
-        private int requiredGems;
-        private int gemsCount;
+        private int gemsCostForThisChest; 
 
         public ChestOpenWithGems(ResourceService resourceService, ChestController chestController)
         {
             this.chestController = chestController;
             this.resourceController = resourceService.GetResourceController();
+            this.gemsCostForThisChest = chestController.GetGemsRequiredToUnlockCount();
         }
 
         public void Execute()
         {
-            requiredGems = chestController.GetGemsRequiredToUnlockCount();
-            gemsCount = resourceController.GetGemsCount();
+            int currentGems = resourceController.GetGemsCount();
 
-            if (requiredGems <= gemsCount)
+            if (gemsCostForThisChest <= currentGems)
             {
-                int remainingGems = gemsCount - requiredGems;
+                resourceController.DeductGems(gemsCostForThisChest);
                 chestController.ChangeState(ChestState.Unlocked);
                 chestController.DisableTimerText();
                 chestController.SetIsChestUnlockWithGems(true);
-                resourceController.SetGemsCount(remainingGems);
             }
             else
             {
-                GameService.Instance.uiService.ShowNotEnoughGemsPopup();
+                GameService.Instance.eventService.OnNotEnoughGemsToUnlock.InvokeEvent();
             }
         }
 
         public void Undo()
         {
-            resourceController.SetGemsCount(gemsCount);
+            resourceController.AddGems(gemsCostForThisChest);
         }
     }
 }
