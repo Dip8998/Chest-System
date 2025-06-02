@@ -15,7 +15,7 @@ MonoBehaviour:
   chestType: 0
   chestSprite: {fileID: -471966381, guid: 7e1cdf6e6162618468d71fde3041f0f5, type: 3}
   chestUnlockedSprite: {fileID: 942671860, guid: 7e1cdf6e6162618468d71fde3041f0f5, type: 3}
-  chestTimer: 1
+  chestTimer: 15
   chestGeneratingChance: 40
   minCoinValue: 100
   maxCoinValue: 200

@@ -46,12 +46,12 @@ namespace ChestSystem.UI
                 isSlotAvailable[slot] = !hasChest;
         }
 
-        public ChestSlotUIView GetCurrentSlot() => currentSlot;
-
         private void UpdateSlotOrder()
         {
             for (int i = 0; i < slotList.Count; i++)
                 slotList[i].transform.SetSiblingIndex(i);
         }
+
+        public ChestSlotUIView GetCurrentSlot() => currentSlot;
     }
 }

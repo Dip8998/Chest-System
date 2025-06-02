@@ -7,7 +7,7 @@
 
         public ResourceModel()
         {
-            gemsCount = 15;
+            gemsCount = 0;
             coinsCount = 0;
         }
 

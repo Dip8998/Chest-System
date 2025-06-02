@@ -10,6 +10,7 @@ namespace ChestSystem.Service
 {
     public class UIService : MonoBehaviour
     {
+        [Header("Panels")]
         [SerializeField] private GameObject unlockChestPanel;
         [SerializeField] private GameObject undoCollectPanel;
         [SerializeField] private GameObject displayCollectedValues;
@@ -18,12 +19,16 @@ namespace ChestSystem.Service
         [SerializeField] private GameObject gemsAreNotEnoughPanel;
         [SerializeField] private GameObject alreadyInQueuePanel;
 
+        [Header("Buttons")]
         [SerializeField] private Button startTimerButton;
         [SerializeField] private Button unlockChestWithGemsButton;
         [SerializeField] private Button undoButton;
         [SerializeField] private Button collectButton;
         [SerializeField] private Button cancelQueueButton;
+        [SerializeField] private Button addChestSlotButton;
+        [SerializeField] private Button generateChestButton;
 
+        [Header("Texts")]
         [SerializeField] private TextMeshProUGUI gemsText;
         [SerializeField] private TextMeshProUGUI chestTypeTextForUnlockPanel;
         [SerializeField] private TextMeshProUGUI chestTypeTextForUndoPanel;
@@ -31,8 +36,6 @@ namespace ChestSystem.Service
         [SerializeField] private TextMeshProUGUI collectedCoinsText;
 
         [SerializeField] private GameObject chestSlotPrefab;
-        [SerializeField] private Button addChestSlotButton;
-        [SerializeField] private Button generateChestButton;
         [SerializeField] private int assignedChestSlots;
         [SerializeField] private Transform chestSlotContainer;
 
@@ -46,10 +49,15 @@ namespace ChestSystem.Service
         {
             chestSlotUIController = new ChestSlotUIController();
             AssignSlots();
+            UIButtonListeners();
+            HideAllUIPanels();
+        }
+
+        private void UIButtonListeners()
+        {
             addChestSlotButton.onClick.AddListener(CreateSlot);
             generateChestButton.onClick.AddListener(() => GameService.Instance.chestService.GenerateChest(GetSlots()));
             startTimerButton.onClick.AddListener(SetTimer);
-            HideAllUIPanels();
         }
 
         private void OnEnable()
@@ -126,43 +134,35 @@ namespace ChestSystem.Service
             chestSlotUIController.AddSlot(chestUISlot);
         }
 
-        public ChestSlotUIController GetSlots() => chestSlotUIController;
-
-        public void HideAllUIPanels()
-        {
-            unlockChestPanel.SetActive(false);
-            undoCollectPanel.SetActive(false);
-            displayCollectedValues.SetActive(false);
-            queueCancelPanel.SetActive(false);
-            slotsFullPopup.SetActive(false);
-            gemsAreNotEnoughPanel.SetActive(false);
-            alreadyInQueuePanel.SetActive(false);
-        }
-
-        public void CloseButton()
-        {
-            GameService.Instance.soundService.Play(Sound.Sounds.BUTTONCLICK);
-        }
-
         public void ShowRelevantPanel(IState currentState)
         {
             HideAllUIPanels();
 
-            if (currentState is LockedState || currentState is UnlockingState)
+            switch (currentState)
             {
-                unlockChestPanel.SetActive(true);
+                case LockedState:
+                case UnlockingState:
+                    unlockChestPanel.SetActive(true);
+                    break;
+                case UnlockedState:
+                    undoCollectPanel.SetActive(true);
+                    break;
+                case CollectedState:
+                    displayCollectedValues.SetActive(true);
+                    break;
+                case QueuedState:
+                    queueCancelPanel.SetActive(true);
+                    break;
             }
-            else if (currentState is UnlockedState)
+        }
+
+        private void SetTimer()
+        {
+            GameService.Instance.soundService.Play(Sound.Sounds.BUTTONCLICK);
+            HideAllUIPanels();
+            if (currentChestController != null)
             {
-                undoCollectPanel.SetActive(true);
-            }
-            else if (currentState is CollectedState)
-            {
-                displayCollectedValues.SetActive(true);
-            }
-            else if (currentState is QueuedState)
-            {
-                queueCancelPanel.SetActive(true);
+                GameService.Instance.chestService.EnqueueChestForUnlock(currentChestController);
             }
         }
 
@@ -197,16 +197,6 @@ namespace ChestSystem.Service
             HideAllUIPanels();
             chestSlotUIController.SetIsSlotHasAChest(currentChestSlotUIView, false);
             displayCollectedValues.SetActive(true);
-        }
-
-        private void SetTimer()
-        {
-            GameService.Instance.soundService.Play(Sound.Sounds.BUTTONCLICK);
-            HideAllUIPanels();
-            if (currentChestController != null)
-            {
-                GameService.Instance.chestService.EnqueueChestForUnlock(currentChestController);
-            }
         }
 
         private void CancelQueue()
@@ -250,5 +240,23 @@ namespace ChestSystem.Service
             GameService.Instance.soundService.Play(Sound.Sounds.POPUPSOUND);
             alreadyInQueuePanel.SetActive(true);
         }
+
+        public void CloseButtons()
+        {
+            GameService.Instance.soundService.Play(Sound.Sounds.BUTTONCLICK);
+        }
+
+        public void HideAllUIPanels()
+        {
+            unlockChestPanel.SetActive(false);
+            undoCollectPanel.SetActive(false);
+            displayCollectedValues.SetActive(false);
+            queueCancelPanel.SetActive(false);
+            slotsFullPopup.SetActive(false);
+            gemsAreNotEnoughPanel.SetActive(false);
+            alreadyInQueuePanel.SetActive(false);
+        }
+
+        public ChestSlotUIController GetSlots() => chestSlotUIController;
     }
 }

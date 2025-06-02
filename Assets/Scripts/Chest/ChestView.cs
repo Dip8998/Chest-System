@@ -63,13 +63,12 @@ public class ChestView : MonoBehaviour
         chestUnlockingTimerText.text = chestController.TimeFormat(timeInSeconds);
     }
 
-    public void SetChestStateText(string state) => chestStateText.text = state;
-
-    public void DisableTimerText() => chestUnlockingTimerText.gameObject.SetActive(false);
-
     private void ShowUnlockPanel()
     {
         chestController.EnableUnlockSelection();
     }
 
+    public void SetChestStateText(string state) => chestStateText.text = state;
+
+    public void DisableTimerText() => chestUnlockingTimerText.gameObject.SetActive(false);
 }
